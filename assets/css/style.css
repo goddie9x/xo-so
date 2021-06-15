@@ -418,7 +418,7 @@ div {
 }
 
 .flex-item {
-    min-width: 10vw;
+    min-width: 8vw;
     line-height: 40px;
     align-items: center;
     animation: fade 0.2s linear;
@@ -475,6 +475,7 @@ div {
 
 .notif .row {
     align-self: end;
+    width: 100%;
 }
 
 
@@ -594,6 +595,20 @@ div {
         max-width: 60vw;
         width: 60vw;
     }
+    .main.row {
+        flex-wrap: wrap;
+    }
+    .xo-so {
+        order: 1;
+        width: 50vw;
+    }
+    .notif {
+        order: 2;
+    }
+    .check-money {
+        order: 3;
+        width: 70vw;
+    }
 }
 
 @media (max-width: 775px) {
@@ -662,5 +677,20 @@ div {
     }
     .blog__item--title {
         font-size: 18px;
+    }
+    .xo-so {
+        order: 1;
+        width: 80vw;
+    }
+    .notif {
+        order: 3;
+        width: 80vw;
+    }
+    .check-money {
+        width: 80vw;
+        order: 2;
+    }
+    .flex-item {
+        min-width: 15vw;
     }
 }

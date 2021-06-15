@@ -22,10 +22,19 @@ $('.main-nav-mobile').onclick = function() {
     $toggle([...$$('.menu-icon'), $('.main-nav-bar-mobile')]);
 }
 
-xoSo('input[value="Oánh lại"]', 'input[value="Đặt lại"]', '.xoso', 'input[value="Tắt âm"]');
+start();
 
-async function xoSo(buttonPlay, buttonReset, musicPlay, buttonStopMusic) {
-    let prizes = ['', '', '', '', '', '', '', ''];
+async function start() {
+    createScores('input[value="Oánh lại"]', '.xoso', 'input[value="Tắt âm"]')
+        .then(prizes => {
+            console.log(prizes)
+        })
+}
+
+
+async function createScores(buttonPlay, musicPlay, buttonStopMusic) {
+    let prizes = [];
+    let waitingTimes = 0;
     if (buttonStopMusic) {
         $(buttonStopMusic).onclick = function() {
             if (musicPlay) {
@@ -39,10 +48,24 @@ async function xoSo(buttonPlay, buttonReset, musicPlay, buttonStopMusic) {
             $(musicPlay).play();
         }
         for (let i = 7; i >= 0; i--) {
-            prizes[i] = getScores(i);
-            let a = await delay(7000 - Math.abs(4 - i) * 800);
+            getScores(i)
+                .then(prize => {
+                    prizes.push(prize)
+                })
+            let waitingTime = (i > 2) ? (7000 - Math.abs(4 - i) * 800) : (2000);
+            let a = await delay(waitingTime);
         }
     }
+    for (let i = 7; i >= 0; i--) {
+        let waitingTime = (i > 2) ? (7000 - Math.abs(4 - i) * 800) : (2000);
+        waitingTimes += waitingTime;
+    }
+    return new Promise(async(resolve) => {
+        setTimeout(resolve(prizes), waitingTimes);
+    })
+}
+
+function deleteScores(buttonReset) {
     $(buttonReset).onclick = function() {
         if (musicPlay) {
             $(musicPlay).pause();
@@ -51,10 +74,7 @@ async function xoSo(buttonPlay, buttonReset, musicPlay, buttonStopMusic) {
             prizes[i] = resetScores(i);
         }
     }
-    return Promise.resolve(prizes)
 }
-
-
 async function getScores(id) {
     let prize = [];
     const length = (id < 4) ? (5) : ((id < 6) ? (4) : ((id < 7) ? (3) : (2)));
