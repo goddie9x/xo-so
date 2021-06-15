@@ -469,6 +469,14 @@ div {
     flex-grow: 3;
 }
 
+.notif {
+    text-align: center;
+}
+
+.notif .row {
+    align-self: end;
+}
+
 
 /*--------------------------------HISTORY---------------------------------------*/
 

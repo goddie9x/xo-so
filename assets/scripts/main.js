@@ -1,7 +1,6 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 const Oder = ['Đặc biệt', 'Giải nhất', 'Giải nhì', 'Giải ba', 'Giải bốn', 'Giải năm', 'Giải sáu', 'Giải bảy'];
-var prizes = [];
 
 const $AO = function activeOn(elements) {
     elements.forEach(element => {
@@ -23,49 +22,91 @@ $('.main-nav-mobile').onclick = function() {
     $toggle([...$$('.menu-icon'), $('.main-nav-bar-mobile')]);
 }
 
-xoSo('input[value="Oánh lại"]', '.xoso', 'input[value="Tắt âm"]');
+xoSo('input[value="Oánh lại"]', 'input[value="Đặt lại"]', '.xoso', 'input[value="Tắt âm"]');
 
-function xoSo(button, musicPlay, buttonStopMusic) {
+async function xoSo(buttonPlay, buttonReset, musicPlay, buttonStopMusic) {
+    let prizes = ['', '', '', '', '', '', '', ''];
     if (buttonStopMusic) {
         $(buttonStopMusic).onclick = function() {
-            $(musicPlay).pause();
+            if (musicPlay) {
+                $(musicPlay).pause();
+            }
         };
     }
-    $(button).onclick = function() {
+    $(buttonPlay).onclick = async function() {
         if (musicPlay) {
+            $(musicPlay).volume = 0.5;
             $(musicPlay).play();
         }
-        for (let i = 0; i < 8; i++) {
-            getScores(i)
+        for (let i = 7; i >= 0; i--) {
+            prizes[i] = getScores(i);
+            let a = await delay(7000 - Math.abs(4 - i) * 800);
         }
     }
-
+    $(buttonReset).onclick = function() {
+        if (musicPlay) {
+            $(musicPlay).pause();
+        }
+        for (let i = 7; i >= 0; i--) {
+            prizes[i] = resetScores(i);
+        }
+    }
+    return Promise.resolve(prizes)
 }
 
 
-function getScores(id) {
+async function getScores(id) {
+    let prize = [];
+    const length = (id < 4) ? (5) : ((id < 6) ? (4) : ((id < 7) ? (3) : (2)));
+    const scores = (id == 3 || id == 5) ? (document.getElementById(id).querySelectorAll('.flex-item:not(.title,.score)')) : (document.getElementById(id).querySelectorAll('.flex-item.score'));
+
+    for (const score of scores) {
+        let tempScore;
+        let times = 0;
+        let interval = setInterval(function() {
+            if (times > 20) {
+                clearInterval(interval);
+            }
+            tempScore = fRandom(length);
+            score.innerHTML = tempScore;
+            times++;
+        }, 50);
+        prize.push(tempScore);
+        let a = await delay(1000);
+    }
+    return Promise.resolve(prize);
+}
+
+function resetScores(id) {
     let prize = [];
     const length = (id < 4) ? (5) : ((id < 6) ? (4) : ((id < 7) ? (3) : (2)));
     const scores = (id == 3 || id == 5) ? (document.getElementById(id).querySelectorAll('.flex-item:not(.title,.score)')) : (document.getElementById(id).querySelectorAll('.flex-item.score'));
 
     scores.forEach(score => {
-        for (let i = 0; i < 10; i++) {
-            let temp = random(length);
+        let tempScore = '';
 
-            score.innerHTML = temp;
-            prize.push(temp)
+        for (let i = 0; i < length; i++) {
+            tempScore += 0;
         }
-    })
-    return prize;
+        score.innerHTML = tempScore;
+        prize.push(tempScore);
+        return Promise.resolve(prize);
+    });
 }
-
 //hiện random các số trong một giải và render ra
 
 
-function random(length) {
-    result = '';
+function fRandom(length) {
+    let result = '';
+
     for (let i = 0; i < length; i++) {
         result += Math.floor(Math.random() * 10);
     }
     return result;
+}
+
+function delay(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    })
 }
