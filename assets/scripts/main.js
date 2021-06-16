@@ -17,16 +17,60 @@ const $toggle = function toggleActiveClass(elements) {
 }
 let currentMoney = 1000000;
 let played = false;
+let playBoard = [];
+for (let i = 0; i < 100; i++) {
+    playBoard.push([0, 0, 0, 0]);
+}
+let recentPlay = [];
+for (let i = 0; i < 100; i++) {
+    recentPlay.push([0, 0, 0, 0]);
+}
+
+renderCalTable('.history-table', playBoard, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi']);
+renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số lần chưa ra lô', 'Số lần ra đề']);
+
+function renderCalTable(tableTarget, tableArray, tableTitleArray) {
+    const calMainTable = $(tableTarget);
+    let tableArrayLength = tableArray.length;
+    let tableTitleArrayLength = tableTitleArray.length;
+    //create header table
+    let html = `
+    <th colspan=100%>
+        <div class="head-table">
+        ${tableTitleArray[0]}
+        </div>
+    </th>
+    <tr class="table-title">
+    `;
+    //render table title
+    for (i = 1; i < tableTitleArrayLength; i++) {
+        html += `<td>${tableTitleArray[i]}</td>`;
+    }
+    html += `</tr>`;
+    //render table data
+    for (let i = 0; i < tableArrayLength; i++) {
+        let tempNumber = (i < 10) ? ('0' + i) : ('' + i);
+        html += `
+        <tr class="table-row-${i}">
+        <td>${tempNumber}</td>
+        `;
+        tableArray[i].forEach(data => {
+            html += `<td>${data}</td>`
+        });
+        html += `</>`;
+    }
+    calMainTable.innerHTML = html;
+}
 
 $('.main-nav-mobile').onclick = function() {
     $toggle([...$$('.menu-icon'), $('.main-nav-bar-mobile')]);
 }
-
 start();
 
 async function start() {
+    let musicPlay = $('.xoso');
     let prizes = ['', '', '', '', '', '', '', ''];
-    acting('.lo input[value="phang"]', '.de input[value="phang"]');
+    playBoard.push(acting('.lo input[value="phang"]', '.de input[value="phang"]'));
 
     createScores('input[value="Oánh lại"]', '.xoso', 'input[value="Đặt lại"]', 'input[value="Tắt âm"]');
     let checkPlayDone = setInterval(function() {
@@ -34,20 +78,49 @@ async function start() {
             for (let i = 0; i < 8; i++) {
                 prizes[i] = getScores(i);
             }
-            checkPlayDone.clearInterval();
+
+            delay(800)
+                .then(() => {
+                    console.log(playBoard);
+                    if (musicPlay) {
+                        musicPlay.pause();
+                        musicPlay.currentTime = 0;
+                    }
+                    played = false;
+                })
         }
     }, 1000)
+
+}
+
+function calMoneys(prizes) {
+
 }
 
 function acting(btnLo, btnDe) {
     let buttonLo = $(btnLo);
     let buttonDe = $(btnDe);
+    let soLo = [];
+    let soDe = [];
+    let tien = 0;
 
     buttonLo.onclick = function(e) {
-        handleActing('lo');
+        let currentPlay = handleActing('lo');
+        soLo.push(currentPlay.number);
+        tien += currentPlay.money;
     }
     buttonDe.onclick = function(e) {
-        handleActing('de');
+        let currentPlay = handleActing('de');
+        soDe.push(currentPlay.number);
+        tien += currentPlay.money;
+    }
+
+    let playTime = new Date();
+    return {
+        playTime,
+        soLo,
+        soDe,
+        tien
     }
 }
 
@@ -55,30 +128,33 @@ function handleActing(type) {
     let numberInput = $(`#select-${type}`);
     let moneyInput = $(`#money-${type}`);
     const acting = $(`.acting-${type}`);
+    const currentMny = $('.current-money');
 
     if (numberInput && numberInput) {
         let number = numberInput.value;
         let money = moneyInput.value;
 
         if (number && money) {
+            if (currentMoney - money <= 0) {
+                alert('Đánh vừa thôi hết tiền rồi');
+                return;
+            }
             currentMoney -= money;
             acting.innerHTML += ` <div class="acting-times col">
             <div class="nbr">${number}:</div>
             <div class="mney">${money}</div>
             <div>`;
+
+            currentMny.innerHTML = `${currentMoney}`;
             return {
                 number,
-                money
+                money,
             }
         } else {
             alert('vui lòng nhập đủ cả số đánh và cả tiền');
             return;
         }
     }
-}
-
-function calMoneys(prizes) {
-
 }
 
 async function createScores(buttonPlay, musicPlay, buttonReset, buttonStopMusic) {
@@ -92,31 +168,37 @@ async function createScores(buttonPlay, musicPlay, buttonReset, buttonStopMusic)
         stopMusicBtn.onclick = function() {
             if (musicPlay) {
                 $(musicPlay).pause();
+                musicPlay.currentTime = 0;
             }
         };
     }
     if (resetScoresBtn) {
         resetScoresBtn.onclick = function() {
+            if (!played) {
+                alert('số chưa về reset cái giề');
+                return;
+            }
             if (musicPlayBtn) {
                 musicPlayBtn.pause();
+                musicPlayBtn.currentTime = 0;
             }
             for (let i = 7; i >= 0; i--) {
                 resetScores(i);
             }
             $('.acting').innerHTML = `
-            <div class="flex-item">
-                        <div class="acting-lo-title">
-                            Danh sách lô đã oánh:
+                <div class="flex-item">
+                            <div class="acting-lo-title">
+                                Danh sách lô đã oánh:
+                            </div>
+                            <div class="acting-lo"></div>
                         </div>
-                        <div class="acting-lo"></div>
-                    </div>
-                    <div class="flex-item">
-                        <div class="acting-de-title">
-                            Danh sách đề đã oánh:
+                        <div class="flex-item">
+                            <div class="acting-de-title">
+                                Danh sách đề đã oánh:
+                            </div>
+                            <div class="acting-de"></div>
                         </div>
-                        <div class="acting-de"></div>
-                    </div>
-            `;
+                `;
             played = false;
         }
     }
@@ -179,6 +261,7 @@ function resetScores(id) {
         }
         score.innerHTML = tempScore;
         prize.push(tempScore);
+        wait = 1000;
         return Promise.resolve(prize);
     });
 }
@@ -198,8 +281,4 @@ function delay(ms) {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     })
-}
-
-$('input[value="Xem thống kê"]').onclick = function() {
-    $('.cal').style.display = 'block';
 }

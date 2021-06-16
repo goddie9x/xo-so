@@ -209,98 +209,127 @@
                 <div class="flex-item">bạn vừa thua</div>
                 <div class="flex-item">-1</div>
                 <div class="flex-item">Bờ đê vẫy gọi</div>
-                <div class="flex-item row">
-                    <input type="button" value="Xem thống kê">
-                    <input type="button" value="Xem lịch sử">
+                <div class="flex-item row notif-btn">
+                    <a class="btn" href="#cal">Xem thống kê</a>
+                    <a class="btn" href="#history">Xem lịch sử</a>
                 </div>
             </div>
         </div>
     </section>
-    <section class="history">
-        <table>
-            <th>Lịch sử 10 lần chơi gần nhất</th>
-            <tr>
-                <td>Thời gian</td>
-                <td>Lô đã đánh</td>
-                <td>Đề đã đánh</td>
-                <td> Triền lãi</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+    <section id="history" class="history">
+        <a href="#" class="out-board"></a>
+        <table class="history-table" cellspacing="0px">
         </table>
     </section>
-    <section class="cal">
-        <table class="times">
-            <th>Số lần quay giải: </th>
-            <tr>
-                <td>Bộ số</td>
-                <td>Số lần ra lô</td>
-                <td>Ra liên tiếp</td>
-                <td>Số vòng chưa ra</td>
-                <td>Số lần ra đề</td>
-            </tr>
-        </table>
+    <section class="cal" id="cal">
+        <a href="#" class="out-board"></a>
+        <div class="cal-table row">
+            <div class="cal-table-item cal-table1">
+                <table class="cal-main" cellspacing="0px">
+                </table>
+            </div>
+            <div class="cal-table-item row">
+                <div class="cal-table2">
+                    <table class="cal-table2 few" cellspacing="0px">
+                        <th colspan=100%>
+                            <div class="head-table">
+                                Ra ít nhất
+                            </div>
+                        </th>
+                        <tr class="table-title">
+                            <td></td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-lo">
+                            <td class="table-title">Lô</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-de">
+                            <td class="table-title">đề</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="cal-table2">
+                    <table class="cal-table2 many" cellspacing="0px">
+                        <th colspan=100%>
+                            <div class="head-table">
+                                Ra ít nhất
+                            </div>
+                        </th>
+                        <tr class="table-title">
+                            <td></td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-lo">
+                            <td class="table-title">Lô</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-de">
+                            <td class="table-title">đề</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="cal-table2">
+                    <table class="cal-table2 lo-khan" cellspacing="0px">
+                        <th colspan=100%>
+                            <div class="head-table">
+                                Ra ít nhất
+                            </div>
+                        </th>
+                        <tr class="table-title">
+                            <td></td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-lo">
+                            <td class="table-title">Lô</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-de">
+                            <td class="table-title">đề</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="cal-table2">
+                    <table class="cal-table2 lo-roi" cellspacing="0px">
+                        <th colspan=100%>
+                            <div class="head-table">
+                                Ra ít nhất
+                            </div>
+                        </th>
+                        <tr class="table-title">
+                            <td></td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-lo">
+                            <td class="table-title">Lô</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                        <tr class="table-data data-de">
+                            <td class="table-title">đề</td>
+                            <td>Bộ số</td>
+                            <td>Số lần</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </section>
     <section class="music">
-        <audio class="xoso" src="./assets/media/music/Xo-So.mp3"></audio>
+        <audio class="xoso" loop="true" src="./assets/media/music/Xo-So.mp3"></audio>
         <audio src="./assets/media/music/oi_doi_oi.mp3" class="oi-doi-oi"></audio>
     </section>
     </section>

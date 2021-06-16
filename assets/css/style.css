@@ -232,7 +232,7 @@ ul {
 }
 
 a:hover {
-    color: brown;
+    color: rgb(15, 241, 15);
 }
 
 ul li {
@@ -359,6 +359,18 @@ div {
     line-height: 30px;
 }
 
+.btn {
+    background-color: red;
+    min-width: 100px;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn~.btn {
+    margin-left: 10px;
+}
+
 
 /*---------------------------------------------NAME---------------------------------*/
 
@@ -374,6 +386,10 @@ div {
 .my-pic {
     text-align: center;
     width: 150px;
+}
+
+.notif .btn {
+    line-height: 20px;
 }
 
 
@@ -432,13 +448,24 @@ div {
     }
 }
 
+.dac-biet {
+    color: red;
+}
+
 .flex-item.title {
     margin-left: 20px;
 }
 
 .flex-item.score {
+    line-height: 80px;
     flex-grow: 1;
     text-align: center;
+    font-size: 150%;
+}
+
+.dac-biet .score {
+    font-size: 250%;
+    text-transform: uppercase;
 }
 
 .flex-item .flex-item {
@@ -495,14 +522,64 @@ div {
 
 /*--------------------------------HISTORY---------------------------------------*/
 
-.history {
-    display: none;
+.out-board {
     position: fixed;
     top: 50px;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.history {
+    display: none;
+    position: fixed;
+    top: 50px;
+    right: 0;
+    height: calc(100vh - 50px);
+}
+
+.history-table {
+    position: fixed;
+    min-width: 60vw;
+    max-width: 80vw;
+    background-color: #fff;
+    top: 50px;
+    right: 0;
+    color: black;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-title {
+    color: #fff;
+    background-color: red;
+}
+
+th,
+tr,
+td {
+    padding: 0;
+    margin: 0;
+    border: 1px solid black;
+}
+
+th,
+tr,
+td {
+    min-width: 30px;
+    height: 30px;
+    line-height: normal;
+}
+
+.head-table {
+    line-height: 30px;
+    background-color: black;
+    color: red;
+}
+
+.history:target {
+    display: block;
 }
 
 
@@ -512,10 +589,44 @@ div {
     display: none;
     position: fixed;
     top: 50px;
-    left: 0;
     right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.cal-table {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    color: black;
+    border: 1px solid black;
+    text-align: center;
+    max-width: 80vw;
+}
+
+.cal:target {
+    display: block;
+}
+
+.cal-table-item {
+    flex-grow: 1;
+    min-width: 40vw;
+    max-height: 80vh;
+    overflow-y: unset;
+    background-color: #fff;
+}
+
+.cal-table-item.cal-table1 {
+    overflow-y: scroll;
+}
+
+.cal-table-item.row {
+    flex-wrap: wrap;
+    height: max-content;
+}
+
+.cal-table2 {
+    border-left: 1px solid black;
+    height: max-content;
+    width: 18vw;
 }
 
 
@@ -622,6 +733,10 @@ div {
     .check-money {
         order: 3;
         width: 70vw;
+    }
+    .history-table,
+    .cal-table {
+        top: 100px;
     }
 }
 
