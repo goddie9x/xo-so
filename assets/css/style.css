@@ -17,7 +17,6 @@ html {
 
 body {
     width: 100%;
-    background-image: url(../images/milky\ way.png);
     background-color: rgba(0, 0, 0, 0.8);
     background-repeat: no-repeat;
     background-size: cover;
@@ -452,7 +451,7 @@ div {
 
 .check-money input,
 .check-money label {
-    line-height: 20px;
+    line-height: 15px;
     margin: 3px 10px;
     height: 30px;
 }
@@ -476,6 +475,21 @@ div {
 .notif .row {
     align-self: end;
     width: 100%;
+}
+
+.acting-lo,
+.acting-de {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+.acting-times {
+    margin: 10px;
+    min-width: 30px;
+    padding: 5px;
+    color: red;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 
