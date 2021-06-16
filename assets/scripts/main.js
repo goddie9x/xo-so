@@ -26,10 +26,10 @@ for (let i = 0; i < 10; i++) {
     recentPlay.push([0, 0, 0, 0]);
 }
 
-renderCalTable('.history-table', playBoard, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi']);
+renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
 renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số lần chưa ra lô', 'Số lần ra đề']);
 
-function renderCalTable(tableTarget, tableArray, tableTitleArray) {
+function renderCalTable(tableTarget, tableArray, tableTitleArray, deviationTableIndex = 0) {
     const calMainTable = $(tableTarget);
     let tableArrayLength = tableArray.length;
     let tableTitleArrayLength = tableTitleArray.length;
@@ -49,7 +49,7 @@ function renderCalTable(tableTarget, tableArray, tableTitleArray) {
     html += `</tr>`;
     //render table data
     for (let i = 0; i < tableArrayLength; i++) {
-        let tempNumber = (i < 10) ? ('0' + i) : ('' + i);
+        let tempNumber = (i + deviationTableIndex < 10) ? ('0' + (i + deviationTableIndex)) : (i + deviationTableIndex + '');
         html += `
         <tr class="table-row-${i}">
         <td>${tempNumber}</td>
