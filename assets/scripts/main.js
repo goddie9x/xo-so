@@ -22,7 +22,7 @@ for (let i = 0; i < 100; i++) {
     playBoard.push([0, 0, 0, 0]);
 }
 let recentPlay = [];
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
     recentPlay.push([0, 0, 0, 0]);
 }
 
