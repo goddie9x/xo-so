@@ -33,7 +33,7 @@ let tienLo = [];
 let tienDe = [];
 
 renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
-renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số lần chưa ra lô', 'Số lần ra đề']);
+renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số vòng chưa ra lô', 'Số lần ra đề']);
 
 function renderCalTable(tableTarget, tableArray, tableTitleArray, deviationTableIndex = 0) {
     const calMainTable = $(tableTarget);
@@ -60,9 +60,14 @@ function renderCalTable(tableTarget, tableArray, tableTitleArray, deviationTable
         <tr class="table-row-${i}">
         <td>${tempNumber}</td>
         `;
-        tableArray[i].forEach(data => {
-            html += `<td>${data}</td>`
-        });
+        if (Array.isArray(tableArray[i])) {
+            tableArray[i].forEach(data => {
+                html += `<td>${data}</td>`
+            });
+        } else {
+            console.log(tableArray[i]);
+        }
+
         html += `</>`;
     }
     calMainTable.innerHTML = html;
@@ -76,10 +81,9 @@ start();
 async function start() {
     let musicPlay = $('.xoso');
     let prizes = ['', '', '', '', '', '', '', ''];
-    currentPlaying = acting('.lo input[value="phang"]', '.de input[value="phang"]');
-    playBoard.push(currentPlaying);
 
-    createScores('input[value="Oánh lại"]', '.xoso', 'input[value="Đặt lại"]', 'input[value="Tắt âm"]');
+    acting('.lo input[value="phang"]', '.de input[value="phang"]');
+    createScores('input[value="Chơi"]', '.xoso', 'input[value="Đặt lại"]', 'input[value="Tắt âm"]');
     let checkPlayDone = setInterval(function() {
         if (played) {
             //get all prizes
@@ -92,9 +96,13 @@ async function start() {
                     let playTimes = new Date();
                     let playTime = '' + playTimes.getHours() + ':' + playTimes.getMinutes() + ':' + playTimes.getSeconds() + ' Ngày: ' + playTimes.getDate() + '/' + playTimes.getMonth();
                     let lai = 0;
+
                     notifInterest = $('.notif-interest');
                     //handle result of lô đề :v
-                    let deVe = prizes[0].slice(-2);
+                    let deVe = prizes[0].join().slice(-2);
+
+                    playBoard[+deVe][3]++;
+
                     soDe.forEach((so, indexDe) => {
                         if (so == deVe) {
                             lai += +tienDe[indexDe] * 70;
@@ -107,6 +115,9 @@ async function start() {
                     prizes.forEach((prize) => {
                         prize.forEach((score) => {
                             let loVe = score.slice(-2);
+                            //add lô về vào bảng thống kê
+                            playBoard[+loVe][0]++;
+                            //tính lãi lô
                             soLo.forEach((so, indexLo) => {
                                 if (so == loVe) {
                                     lai += +tienLo[indexLo] * 8 / 2.3;
@@ -135,6 +146,7 @@ async function start() {
                 })
                 .then(() => {
                     renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
+                    renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số vòng chưa ra lô', 'Số lần ra đề']);
 
                     if (musicPlay) {
                         musicPlay.pause();
