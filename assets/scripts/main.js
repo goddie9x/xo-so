@@ -199,7 +199,7 @@ function handleActing(type) {
             <div class="mney">${money}</div>
             <div>`;
 
-            currentMny.innerHTML = `${currentMoney}`;
+            currentMny.innerHTML = `$${currentMoney}`;
             return {
                 number,
                 money,
