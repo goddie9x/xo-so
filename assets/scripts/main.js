@@ -190,6 +190,7 @@ function handleActing(type) {
 
         if (number && money && number.length < 3) {
             if (currentMoney - money <= 0) {
+                $('.tham-nam').play();
                 alert('Đánh vừa thôi hết tiền rồi');
                 return;
             }
