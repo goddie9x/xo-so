@@ -126,6 +126,9 @@ async function start() {
                     }
                     recentPlay[playtime] = [playTime, soLo.join(' '), soDe.join(' '), lai];
                     playtime++;
+                    if (playtime > 9) {
+                        playTime = 0;
+                    }
                     return '';
                 })
                 .then(() => {
