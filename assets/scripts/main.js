@@ -244,7 +244,7 @@ function renderMiniTableCal(loMin, loMax, deMin, deMax, khan, loRois) {
                     `;
     //render Lô rơi
     if (loRois) {
-        $('.lo-roi .data-lo').innerHTML += `<td>${loRois}</td>`;
+        $('.lo-roi .data-lo').innerHTML = `<td>${loRois}</td>`;
     }
 }
 
