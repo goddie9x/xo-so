@@ -121,6 +121,8 @@ async function start() {
                         `;
                     if (lai > 0) {
                         $('.oi-doi-oi').play();
+                        currentMoney += lai;
+                        $('.current-money').innerHTML = `$${currentMoney}`;
                     } else {
                         $('.con-cai-nit').play();
                     }
@@ -188,7 +190,7 @@ function handleActing(type) {
         let number = numberInput.value;
         let money = moneyInput.value;
 
-        if (number && money && number.length < 3) {
+        if (number && money && number.length < 3 && number >= 0 && number <= 99) {
             if (currentMoney - money <= 0) {
                 $('.tham-nam').play();
                 alert('Đánh vừa thôi hết tiền rồi');
@@ -311,21 +313,29 @@ async function createScore(id) {
 }
 
 function resetScores(id) {
-    let prize = [];
     const length = (id < 4) ? (5) : ((id < 6) ? (4) : ((id < 7) ? (3) : (2)));
     const scores = (id == 3 || id == 5) ? (document.getElementById(id).querySelectorAll('.flex-item:not(.title,.score)')) : (document.getElementById(id).querySelectorAll('.flex-item.score'));
-
     scores.forEach(score => {
         let tempScore = '';
-
         for (let i = 0; i < length; i++) {
             tempScore += 0;
         }
         score.innerHTML = tempScore;
-        prize.push(tempScore);
-        wait = 1000;
-        return Promise.resolve(prize);
     });
+    $('.acting').innerHTML = `
+    <div class="flex-item">
+                <div class="acting-lo-title">
+                    Danh sách lô đã oánh:
+                </div>
+                <div class="acting-lo"></div>
+            </div>
+            <div class="flex-item">
+                <div class="acting-de-title">
+                    Danh sách đề đã oánh:
+                </div>
+                <div class="acting-de"></div>
+            </div>
+    `;
 }
 //hiện random các số trong một giải và render ra
 
