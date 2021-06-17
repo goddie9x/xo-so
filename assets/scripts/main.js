@@ -232,7 +232,7 @@ async function createScores(buttonPlay, musicPlay, buttonReset, buttonStopMusic)
     }
     if (resetScoresBtn) {
         resetScoresBtn.onclick = function() {
-            if (!played) {
+            if (playing) {
                 alert('số chưa về reset cái giề');
                 return;
             }
