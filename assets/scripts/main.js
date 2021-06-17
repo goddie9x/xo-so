@@ -22,7 +22,7 @@ let playBoard = [];
 for (let i = 0; i < 100; i++) {
     playBoard.push([0, 0, 0, 0]);
 }
-let recentPlay = [];
+let recentPlay = []
 for (let i = 0; i < 10; i++) {
     recentPlay.push([0, 0, 0, 0]);
 }
@@ -93,16 +93,16 @@ async function start() {
             }
 
             delay(800)
-                .then(() => {
-                    let recentPlayBoard = playBoard;
-                    return recentPlayBoard;
-                })
-                .then((recentPlayBoard) => {
+                .then((a) => {
                     let playTimes = new Date();
                     let playTime = '' + playTimes.getHours() + ':' + playTimes.getMinutes() + ':' + playTimes.getSeconds() + ' Ngày: ' + playTimes.getDate() + '/' + playTimes.getMonth();
                     let lai = 0;
-
-                    notifInterest = $('.notif-interest');
+                    let soVe = [];
+                    let notifInterest = $('.notif-interest');
+                    let loMinMax = [0, 0];
+                    let deMinMax = [0, 0];
+                    let khan = 0;
+                    let loRois = [];
                     //handle result of lô đề :v
                     let deVe = prizes[0].join().slice(-2);
 
@@ -120,6 +120,10 @@ async function start() {
                     prizes.forEach((prize) => {
                         prize.forEach((score) => {
                             let loVe = score.slice(-2);
+                            //lọc số lô về
+                            if (!soVe.includes(loVe)) {
+                                soVe.push(+loVe);
+                            }
                             //add lô về vào bảng thống kê
                             playBoard[+loVe][0]++;
                             //tính lãi lô
@@ -130,17 +134,44 @@ async function start() {
                             })
                         })
                     });
-
-                    recentPlayBoard.forEach((so, index) => {
-                        if (so[0] < playBoard[index][0]) {
-                            playBoard[index][1]++;
-                            playBoard[index][2] = 0;
+                    playBoard.forEach((recode, i) => {
+                        //lọc số lần ra liên tiếp lô
+                        if (soVe.includes(i)) {
+                            ++recode[1];
+                            recode[2] = 0;
                         } else {
-                            playBoard[index][1] = 0;
-                            playBoard[index][2]++;
+                            recode[1] = 0;
+                            ++recode[2];
                         }
-                    });
+                        //lọc lô ra nhiều nhất ít nhất
+                        if (recode[0] < playBoard[loMinMax[0]][0]) {
+                            loMinMax[0] = i;
+                        }
+                        if (recode[0] > playBoard[loMinMax[1]][0]) {
+                            loMinMax[1] = i;
+                        }
+                        //lọc đề ra nhiều nhất, ít nhất
+                        if (recode[3] < playBoard[deMinMax[0]][3]) {
+                            deMinMax[0] = i;
+                        }
+                        if (recode[3] > playBoard[deMinMax[1]][3]) {
+                            deMinMax[1] = i;
+                        }
+                        //lọc lô khan
+                        if (recode[2] > playBoard[khan]) {
+                            khan = i;
+                        }
+                        //lọc lô rơi
+                        if (recode[1] > 1) {
+                            loRois.push(i);
+                        }
+                    })
                     lai = Math.floor(lai);
+                    loRois = loRois.join(',');
+
+                    //render table
+                    renderMiniTableCal(loMinMax[0], loMinMax[1], deMinMax[0], deMinMax[1], khan, loRois);
+
                     notifInterest.innerHTML = `
                             <div class="flex-item">${(lai>0)?('Lãi'):('Lỗ')}</div>
                             <div class="flex-item">${lai}</div>
@@ -179,6 +210,42 @@ async function start() {
         }
     }, 1000)
 
+}
+
+function renderMiniTableCal(loMin, loMax, deMin, deMax, khan, loRois) {
+    //render min table
+    $('.few .data-lo').innerHTML = `
+                    <td class="table-title">Lô</td>
+                            <td>${(loMin<10)?('0'+loMin):(loMin)}</td>
+                            <td>${playBoard[loMin][0]}</td>
+                    `;
+
+    $('.few .data-de').innerHTML = `
+                    <td class="table-title">Đề</td>
+                            <td>${(deMin<10)?('0'+deMin):(deMin)}</td>
+                            <td>${playBoard[deMin][3]}</td>
+                    `;
+    //render max table
+    $('.many .data-lo').innerHTML = `
+                    <td class="table-title">Lô</td>
+                            <td>${(loMax<10)?('0'+loMax):(loMax)}</td>
+                            <td>${playBoard[loMax][0]}</td>
+                    `;
+
+    $('.many .data-de').innerHTML = `
+                    <td class="table-title">Đề</td>
+                            <td>${(deMax<10)?('0'+deMax):(deMax)}</td>
+                            <td>${playBoard[deMax][3]}</td>
+                    `;
+    //render đề khan
+    $('.lo-khan .data-lo').innerHTML = `
+                            <td>${(khan<10)?('0'+khan):(khan)}</td>
+                            <td>${playBoard[khan][2]}</td>
+                    `;
+    //render Lô rơi
+    if (loRois) {
+        $('.lo-roi .data-lo').innerHTML += `<td>${loRois}</td>`;
+    }
 }
 
 function calMoneys(prizes) {
