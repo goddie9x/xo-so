@@ -26,7 +26,8 @@ let recentPlay = [];
 for (let i = 0; i < 10; i++) {
     recentPlay.push([0, 0, 0, 0]);
 }
-playtime = 0;
+let rollPlay = 0;
+let playtime = 0;
 let soLo = [];
 let soDe = [];
 let tienLo = [];
@@ -93,6 +94,10 @@ async function start() {
 
             delay(800)
                 .then(() => {
+                    let recentPlayBoard = playBoard;
+                    return recentPlayBoard;
+                })
+                .then((recentPlayBoard) => {
                     let playTimes = new Date();
                     let playTime = '' + playTimes.getHours() + ':' + playTimes.getMinutes() + ':' + playTimes.getSeconds() + ' Ngày: ' + playTimes.getDate() + '/' + playTimes.getMonth();
                     let lai = 0;
@@ -108,10 +113,10 @@ async function start() {
                             lai += +tienDe[indexDe] * 70;
                         }
                         lai -= +tienDe[indexDe];
-                    })
+                    });
                     tienLo.forEach(tien => {
                         lai -= +tien;
-                    })
+                    });
                     prizes.forEach((prize) => {
                         prize.forEach((score) => {
                             let loVe = score.slice(-2);
@@ -124,7 +129,17 @@ async function start() {
                                 }
                             })
                         })
-                    })
+                    });
+
+                    recentPlayBoard.forEach((so, index) => {
+                        if (so[0] < playBoard[index][0]) {
+                            playBoard[index][1]++;
+                            playBoard[index][2] = 0;
+                        } else {
+                            playBoard[index][1] = 0;
+                            playBoard[index][2]++;
+                        }
+                    });
                     lai = Math.floor(lai);
                     notifInterest.innerHTML = `
                             <div class="flex-item">${(lai>0)?('Lãi'):('Lỗ')}</div>
@@ -146,7 +161,7 @@ async function start() {
                 })
                 .then(() => {
                     renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
-                    renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số vòng chưa ra lô', 'Số lần ra đề']);
+                    renderCalTable('.cal-main', playBoard, [`Số lần quay giải: ${rollPlay}`, 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số vòng chưa ra lô', 'Số lần ra đề']);
 
                     if (musicPlay) {
                         musicPlay.pause();
@@ -281,6 +296,7 @@ async function createScores(buttonPlay, musicPlay, buttonReset, buttonStopMusic)
             musicPlayBtn.volume = 0.5;
             musicPlayBtn.play();
         }
+        rollPlay++;
         for (let i = 7; i >= 0; i--) {
             playing = true;
             createScore(i);
