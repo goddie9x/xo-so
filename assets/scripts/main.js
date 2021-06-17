@@ -206,7 +206,8 @@ function handleActing(type) {
                 money,
             }
         } else {
-            alert('Nhập tử tế vào bay êi');
+            $('.ngu-dot').play();
+            alert('Nhập tử tế vào bay êi! số đánh phải từ 00-99, phải có tiền đánh chứ chơi chùa à :v');
             return;
         }
     }
