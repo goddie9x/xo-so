@@ -17,6 +17,7 @@ const $toggle = function toggleActiveClass(elements) {
 }
 let currentMoney = 1000000;
 let played = false;
+let playing = false;
 let playBoard = [];
 for (let i = 0; i < 100; i++) {
     playBoard.push([0, 0, 0, 0]);
@@ -25,6 +26,11 @@ let recentPlay = [];
 for (let i = 0; i < 10; i++) {
     recentPlay.push([0, 0, 0, 0]);
 }
+playtime = 0;
+let soLo = [];
+let soDe = [];
+let tienLo = [];
+let tienDe = [];
 
 renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
 renderCalTable('.cal-main', playBoard, ['Số lần quay giải: ', 'Bộ số', 'Số lần ra lô', 'Ra liên tiếp', 'Số lần chưa ra lô', 'Số lần ra đề']);
@@ -70,23 +76,73 @@ start();
 async function start() {
     let musicPlay = $('.xoso');
     let prizes = ['', '', '', '', '', '', '', ''];
-    playBoard.push(acting('.lo input[value="phang"]', '.de input[value="phang"]'));
+    currentPlaying = acting('.lo input[value="phang"]', '.de input[value="phang"]');
+    playBoard.push(currentPlaying);
 
     createScores('input[value="Oánh lại"]', '.xoso', 'input[value="Đặt lại"]', 'input[value="Tắt âm"]');
     let checkPlayDone = setInterval(function() {
         if (played) {
+            //get all prizes
             for (let i = 0; i < 8; i++) {
                 prizes[i] = getScores(i);
             }
 
             delay(800)
                 .then(() => {
-                    console.log(playBoard);
+                    let playTimes = new Date();
+                    let playTime = '' + playTimes.getHours() + ':' + playTimes.getMinutes() + ':' + playTimes.getSeconds() + ' Ngày: ' + playTimes.getDate() + '/' + playTimes.getMonth();
+                    let lai = 0;
+                    notifInterest = $('.notif-interest');
+                    //handle result of lô đề :v
+                    let deVe = prizes[0].slice(-2);
+                    soDe.forEach((so, indexDe) => {
+                        if (so == deVe) {
+                            lai += +tienDe[indexDe] * 70;
+                        }
+                        lai -= +tienDe[indexDe];
+                    })
+                    tienLo.forEach(tien => {
+                        lai -= +tien;
+                    })
+                    prizes.forEach((prize) => {
+                        prize.forEach((score) => {
+                            let loVe = score.slice(-2);
+                            soLo.forEach((so, indexLo) => {
+                                if (so == loVe) {
+                                    lai += +tienLo[indexLo] * 8 / 2.3;
+                                }
+                            })
+                        })
+                    })
+                    lai = Math.floor(lai);
+                    notifInterest.innerHTML = `
+                            <div class="flex-item">${(lai>0)?('Lãi'):('Lỗ')}</div>
+                            <div class="flex-item">${lai}</div>
+                        `;
+                    if (lai > 0) {
+                        $('.oi-doi-oi').play();
+                    } else {
+                        $('.con-cai-nit').play();
+                    }
+                    recentPlay[playtime] = [playTime, soLo.join(' '), soDe.join(' '), lai];
+                    playtime++;
+                    return '';
+                })
+                .then(() => {
+                    renderCalTable('.history-table', recentPlay, ['Lịch sử 10 lần gần nhất ', 'Lần', 'Thời gian', 'Lô đã đánh', 'Đề đã đánh', 'Tiền lãi'], 1);
+
                     if (musicPlay) {
                         musicPlay.pause();
                         musicPlay.currentTime = 0;
                     }
                     played = false;
+                    soLo = [];
+                    soDe = [];
+                    tienLo = [];
+                    tienDe = [];
+                    $('.acting-lo').innerHTML = '';
+                    $('.acting-de').innerHTML = '';
+
                 })
         }
     }, 1000)
@@ -100,30 +156,25 @@ function calMoneys(prizes) {
 function acting(btnLo, btnDe) {
     let buttonLo = $(btnLo);
     let buttonDe = $(btnDe);
-    let soLo = [];
-    let soDe = [];
-    let tien = 0;
 
     buttonLo.onclick = function(e) {
         let currentPlay = handleActing('lo');
-        soLo.push(currentPlay.number);
-        tien += currentPlay.money;
+        if (currentPlay) {
+
+            soLo.push(currentPlay.number);
+            tienLo.push(currentPlay.money);
+        }
     }
     buttonDe.onclick = function(e) {
         let currentPlay = handleActing('de');
-        soDe.push(currentPlay.number);
-        tien += currentPlay.money;
+        if (currentPlay) {
+            soDe.push(currentPlay.number);
+            tienDe.push(currentPlay.money);
+        }
     }
 
-    let playTime = new Date();
-    return {
-        playTime,
-        soLo,
-        soDe,
-        tien
-    }
 }
-
+// handle đánh lô đề :v
 function handleActing(type) {
     let numberInput = $(`#select-${type}`);
     let moneyInput = $(`#money-${type}`);
@@ -134,7 +185,7 @@ function handleActing(type) {
         let number = numberInput.value;
         let money = moneyInput.value;
 
-        if (number && money) {
+        if (number && money && number.length < 3) {
             if (currentMoney - money <= 0) {
                 alert('Đánh vừa thôi hết tiền rồi');
                 return;
@@ -151,7 +202,7 @@ function handleActing(type) {
                 money,
             }
         } else {
-            alert('vui lòng nhập đủ cả số đánh và cả tiền');
+            alert('Nhập tử tế vào bay êi');
             return;
         }
     }
@@ -203,16 +254,22 @@ async function createScores(buttonPlay, musicPlay, buttonReset, buttonStopMusic)
         }
     }
     playButton.onclick = async function nope() {
+        if (playing) {
+            alert('số chưa về oánh vội thế');
+            return;
+        }
         if (musicPlayBtn) {
             musicPlayBtn.volume = 0.5;
             musicPlayBtn.play();
         }
         for (let i = 7; i >= 0; i--) {
+            playing = true;
             createScore(i);
             let waitingTime = (i > 2) ? (7000 - Math.abs(4 - i) * 800) : (2000);
             let a = await delay(waitingTime);
         }
         played = true;
+        playing = false;
     }
 }
 
