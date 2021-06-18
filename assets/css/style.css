@@ -854,4 +854,7 @@ td {
     .check-money label {
         margin: 0;
     }
+    .history-table {
+        max-width: 100vw;
+    }
 }
