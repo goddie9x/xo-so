@@ -247,6 +247,11 @@ input[type="button"] {
     min-width: 60px;
 }
 
+.red {
+    color: red;
+    font-size: 120%;
+}
+
 
 /*---------------------------------------------HEADER---------------------------------------------------*/
 
@@ -856,5 +861,6 @@ td {
     }
     .history-table {
         max-width: 100vw;
+        overflow-y: scroll;
     }
 }
