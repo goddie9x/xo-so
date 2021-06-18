@@ -839,8 +839,7 @@ td {
         height: 50vh;
     }
     .cal-table-item.row {
-        flex-direction: column;
-        height: 40vh;
+        height: 50vh;
         width: 100vw;
         overflow-y: scroll;
         justify-content: flex-start;
