@@ -176,7 +176,7 @@ async function start() {
                             <div class="flex-item">${(lai>0)?('Lãi'):('Lỗ')}</div>
                             <div class="flex-item">${lai}</div>
                         `;
-                    if (lai > 0) {
+                    if (lai >= 0) {
                         $('.oi-doi-oi').play();
                         currentMoney += lai;
                         $('.current-money').innerHTML = `$${currentMoney}`;
