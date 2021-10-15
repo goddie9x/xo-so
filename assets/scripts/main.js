@@ -74,9 +74,6 @@ function renderCalTable(tableTarget, tableArray, tableTitleArray, deviationTable
     calMainTable.innerHTML = html;
 }
 
-$('.main-nav-mobile').onclick = function() {
-    $toggle([...$$('.menu-icon'), $('.main-nav-bar-mobile')]);
-}
 start();
 
 async function start() {
